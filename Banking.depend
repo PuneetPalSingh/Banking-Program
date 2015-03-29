@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1427434115 source:c:\users\puneetpal\documents\codelite programs\interview\main.cpp
+	<iostream>
+	<sstream>
+	<string.h>
+
