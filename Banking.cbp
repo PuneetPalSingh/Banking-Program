@@ -32,10 +32,10 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="Banking.cpp" />
 		<Unit filename="Banking.h" />
 		<Unit filename="bin/Debug/Banking.exe" />
 		<Unit filename="bin/Debug/interview.exe" />
-		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />
