@@ -95,7 +95,7 @@ void Account::WithdrawMoneyFromAccount(unsigned int accountNumber){
 bool accountNumberSeacrh(unsigned int accountNumber){
     unsigned int len = (sizeof(sharedInstanceOfAllAccounts.AccountNumbers)/sizeof(sharedInstanceOfAllAccounts.AccountNumbers[0]));
     unsigned int counter =0;
-    bool flag;
+    bool flag = false;
     for(unsigned int i=0;i<len;i++){
         if(sharedInstanceOfAllAccounts.AccountNumbers[i] != 0){
             counter++;
@@ -104,11 +104,13 @@ bool accountNumberSeacrh(unsigned int accountNumber){
     for(unsigned int i=0;i<counter;i++){
         if(sharedInstanceOfAllAccounts.AccountNumbers[i] == accountNumber){
             flag = true;
+            break;
         }
         else{
             flag = false;
         }
     }
+
     return flag;
 }
 bool verifyAccountName(unsigned int AccountNumber, string name){
@@ -167,14 +169,16 @@ int  main(){
         cin>>option;
 
         switch(option){
-            case 1:
+            case 1:{
 
                 continue;
-            case 2:
+            }
+            break;
+            case 2:{                                                                     //Creating New Account
                 sharedInstanceOfAccount.createNewAccount();
-
+            }
                 break;
-            case 3:
+            case 3:{                                                                     //Depositing Money To Account
                 AccountNum = verifyAccounts();
                 if(AccountNum != 0){
                     sharedInstanceOfAccount = sharedInstanceOfAllAccounts.AllAccounts[AccountNum-1];
@@ -184,9 +188,9 @@ int  main(){
                     cout<<"Account Not Found"<<endl;
                 }
 
-
+            }
                 break;
-            case 4:
+            case 4:{                                                                      //Withdrawing Money From Account
                 AccountNum = verifyAccounts();
                 if(AccountNum != 0){
                     sharedInstanceOfAccount = sharedInstanceOfAllAccounts.AllAccounts[AccountNum-1];
@@ -196,12 +200,20 @@ int  main(){
                     cout<<"Account Not Found"<<endl;
                 }
 
-
+            }
                 break;
-            case 5:
-
+            case 5:{
+                AccountNum = verifyAccounts();
+                if(AccountNum != 0){
+                    sharedInstanceOfAccount = sharedInstanceOfAllAccounts.AllAccounts[AccountNum-1];
+                    cout<<"Your Current Balance Is: "<<sharedInstanceOfAccount.getBalance()<<endl;
+                }
+                else{
+                    cout<<"Account Not Found"<<endl;
+                }
+            }
                 break;
-            case 6:
+            case 6:{
                 cout<<"------------------------------------------------------------------"<<endl;
 
                 for(i=0;sharedInstanceOfAllAccounts.AccountNumbers[i] > 0;i++){
@@ -212,17 +224,50 @@ int  main(){
                     cout<<"Type Of Account: "<<sharedInstanceOfAccount.getTypeOfAccount()<<endl;
                 }
                 cout<<"------------------------------------------------------------------"<<endl;
+            }
                 break;
-            case 7:
+            case 7:{
+                int len = (sizeof(sharedInstanceOfAllAccounts.AccountNumbers)/sizeof(sharedInstanceOfAllAccounts.AccountNumbers[0]));
+                AccountNum = verifyAccounts();
+                unsigned int counter =0;
+                    for(unsigned int i=0; i<len; i++)
+                    {
+                        if(sharedInstanceOfAllAccounts.AccountNumbers[i] != 0)
+                        {
+                            counter++;
+                        }
+                    }
+                if(AccountNum != 0 && ((AccountNum == 1 && counter != AccountNum) || (AccountNum != 1 && counter == AccountNum)))
+                {
+                    for(int i=AccountNum-1; i<counter; i++)
+                    {
+                        sharedInstanceOfAllAccounts.AccountNumbers[i] = sharedInstanceOfAllAccounts.AccountNumbers[i+1];
+                        sharedInstanceOfAllAccounts.AllAccounts[i] = sharedInstanceOfAllAccounts.AllAccounts[i+1];
+                    }
+                    cout<<"Your Account Has Been Closed"<<endl;
 
+                }
+                else if((AccountNum == 1 && counter == AccountNum) || (AccountNum != 1 && counter == AccountNum)){
+                    sharedInstanceOfAllAccounts.AccountNumbers[AccountNum-1] = 0;
+                    cout<<"Your Account Has Been Closed"<<endl;
+                }
+                else{
+                    cout<<"Account Not Found"<<endl;
+                }
+
+            }
                 break;
-            case 8:
-
+            case 8:{
+            }
                 break;
-            case 9:
+            case 9:{
 
-            default:
+            }
+            break;
+            default:{
                 cout<<"Select An Valid Option!!"<<endl;
+            }
+            break;
         };
     }while(option != 9);
     return 0;
