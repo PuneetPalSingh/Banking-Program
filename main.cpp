@@ -1,5 +1,4 @@
 #include <iostream>
-#include <sstream>
 #include <string.h>
 
 using namespace std;
@@ -20,17 +19,18 @@ public:
     unsigned int getAccountNumber();
     string getName();
     unsigned int getBalance();
+    void setBalance(unsigned int,string);
     char getTypeOfAccount();
     void createNewAccount();
-    void depositMoneyToAccount(unsigned int,unsigned int);
-    void WithdrawMoneyFromAccount(unsigned int,unsigned int);
+    void depositMoneyToAccount(unsigned int);
+    void WithdrawMoneyFromAccount(unsigned int);
     void editAccountInformation(unsigned int);
-};
+}static sharedInstanceOfAccount;
 
 class Accounts{
 public:
 
-    int AccountNumbers[10];
+    unsigned int AccountNumbers[10];
     Account AllAccounts[10];
 
 }sharedInstanceOfAllAccounts;
@@ -43,6 +43,14 @@ string Account::getName(){
 }
 unsigned int Account::getBalance(){
     return balance;
+}
+void Account::setBalance(unsigned int money, string type){
+    if(type == "deposit"){
+        balance = balance + money;
+    }
+    else if(type == "withdraw"){
+        balance = balance - money;
+    }
 }
 char Account::getTypeOfAccount(){
     return typeOfAccount;
@@ -64,16 +72,85 @@ void Account::createNewAccount(){
     accountNum++;
 }
 
-void Account::depositMoneyToAccount(unsigned int,unsigned int){
-
+void Account::depositMoneyToAccount(unsigned int accountNumber){
+    unsigned int money;
+    cout<<"Enter Money To Deposit:";
+    cin>>money;
+    sharedInstanceOfAccount = sharedInstanceOfAllAccounts.AllAccounts[accountNumber-1];
+    sharedInstanceOfAccount.setBalance(money, "deposit");
+    sharedInstanceOfAllAccounts.AllAccounts[accountNumber-1] = sharedInstanceOfAccount;
+    cout<<"Money has been successfully Deposited to your Account"<<endl;
 }
 
-int  main(){
-    static Account sharedInstanceOfAccount;
-    int i = 0;
-    int option;
+void Account::WithdrawMoneyFromAccount(unsigned int accountNumber){
+    unsigned int money;
+    cout<<"Enter Money To Deposit:";
+    cin>>money;
+    sharedInstanceOfAccount = sharedInstanceOfAllAccounts.AllAccounts[accountNumber-1];
+    sharedInstanceOfAccount.setBalance(money, "withdraw");
+    sharedInstanceOfAllAccounts.AllAccounts[accountNumber-1] = sharedInstanceOfAccount;
+    cout<<"Money has been successfully Withdrawn From your Account"<<endl;
+}
+// Local Functions
+bool accountNumberSeacrh(unsigned int accountNumber){
+    unsigned int len = (sizeof(sharedInstanceOfAllAccounts.AccountNumbers)/sizeof(sharedInstanceOfAllAccounts.AccountNumbers[0]));
+    unsigned int counter =0;
+    bool flag;
+    for(unsigned int i=0;i<len;i++){
+        if(sharedInstanceOfAllAccounts.AccountNumbers[i] != 0){
+            counter++;
+        }
+    }
+    for(unsigned int i=0;i<counter;i++){
+        if(sharedInstanceOfAllAccounts.AccountNumbers[i] == accountNumber){
+            flag = true;
+        }
+        else{
+            flag = false;
+        }
+    }
+    return flag;
+}
+bool verifyAccountName(unsigned int AccountNumber, string name){
+    sharedInstanceOfAccount = sharedInstanceOfAllAccounts.AllAccounts[AccountNumber-1];
+
+    if(!name.compare(sharedInstanceOfAccount.getName())){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+unsigned int verifyAccounts(){
+
     unsigned int verifyAccountNumber;
     string verifyName;
+
+    cout<<"Enter Your Account Number:";
+    cin>>verifyAccountNumber;
+    cout<<endl;
+    if(accountNumberSeacrh(verifyAccountNumber)){
+        cout<<"Verify Your Name:";
+        cin>>verifyName;
+        cout<<endl;
+        if(verifyAccountName(verifyAccountNumber,verifyName)){
+            return verifyAccountNumber;
+        }
+        else{
+            return 0;
+        }
+
+    }
+    else{
+        return 0;
+    }
+
+}
+int  main(){
+    int AccountNum;
+    int i = 0;
+    int option;
+
     do{
 
 
@@ -98,16 +175,27 @@ int  main(){
 
                 break;
             case 3:
-                cout<<"Enter Your Account Number:";
-                cin>>verifyAccountNumber;
-                cout<<endl;
-                cout<<"Verify Your Name:";
-                cin>>verifyName;
-                cout<<endl;
+                AccountNum = verifyAccounts();
+                if(AccountNum != 0){
+                    sharedInstanceOfAccount = sharedInstanceOfAllAccounts.AllAccounts[AccountNum-1];
+                    sharedInstanceOfAccount.depositMoneyToAccount(AccountNum);
+                }
+                else{
+                    cout<<"Account Not Found"<<endl;
+                }
 
 
                 break;
             case 4:
+                AccountNum = verifyAccounts();
+                if(AccountNum != 0){
+                    sharedInstanceOfAccount = sharedInstanceOfAllAccounts.AllAccounts[AccountNum-1];
+                    sharedInstanceOfAccount.WithdrawMoneyFromAccount(AccountNum);
+                }
+                else{
+                    cout<<"Account Not Found"<<endl;
+                }
+
 
                 break;
             case 5:
